@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { DistanceResult } from '../types'
 
 const props = defineProps<{
   result: DistanceResult
 }>()
 
+const { t, locale } = useI18n()
+
 const formattedMeters = computed(() =>
-  new Intl.NumberFormat('pl-PL', {
+  new Intl.NumberFormat(locale.value === 'pl' ? 'pl-PL' : 'en-US', {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
   }).format(props.result.meters)
 )
 
 const formattedKilometers = computed(() =>
-  new Intl.NumberFormat('pl-PL', {
+  new Intl.NumberFormat(locale.value === 'pl' ? 'pl-PL' : 'en-US', {
     maximumFractionDigits: 4,
     minimumFractionDigits: 4,
   }).format(props.result.kilometers)
@@ -22,23 +25,23 @@ const formattedKilometers = computed(() =>
 </script>
 
 <template>
-  <section class="result" aria-live="polite" aria-label="Wynik obliczeń">
+  <section class="result" aria-live="polite" :aria-label="t('result.title')">
     <div class="result__header">
       <svg class="result__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
       </svg>
-      <h2 class="result__title">Obliczona odległość</h2>
+      <h2 class="result__title">{{ t('result.title') }}</h2>
     </div>
 
     <div class="result__cards">
       <div class="result__card result__card--primary">
         <span class="result__value">{{ formattedMeters }}</span>
-        <span class="result__unit">metrów</span>
+        <span class="result__unit">{{ t('result.meters') }}</span>
       </div>
       <div class="result__divider" aria-hidden="true">=</div>
       <div class="result__card result__card--secondary">
         <span class="result__value">{{ formattedKilometers }}</span>
-        <span class="result__unit">kilometrów</span>
+        <span class="result__unit">{{ t('result.kilometers') }}</span>
       </div>
     </div>
   </section>

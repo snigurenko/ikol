@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import PointInput from './PointInput.vue'
 import AppSpinner from './AppSpinner.vue'
 import type { Coordinates } from '../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   loading: boolean
@@ -42,9 +45,9 @@ function handleReset() {
 }
 
 const PRESET_EXAMPLES = [
-  { label: 'Warszawa → Kraków', p1: { lat: '52.2297', lon: '21.0122' }, p2: { lat: '50.0647', lon: '19.9450' } },
-  { label: 'Paryż → Berlin',    p1: { lat: '48.8566', lon: '2.3522'  }, p2: { lat: '52.5200', lon: '13.4050' } },
-  { label: 'NYC → Londyn',      p1: { lat: '40.7128', lon: '-74.0060'}, p2: { lat: '51.5074', lon: '-0.1278' } },
+  { key: 'warsawKrakow', p1: { lat: '52.2297', lon: '21.0122' }, p2: { lat: '50.0647', lon: '19.9450' } },
+  { key: 'parisBerlin',  p1: { lat: '48.8566', lon: '2.3522'  }, p2: { lat: '52.5200', lon: '13.4050' } },
+  { key: 'nycLondon',    p1: { lat: '40.7128', lon: '-74.0060'}, p2: { lat: '51.5074', lon: '-0.1278' } },
 ]
 
 function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
@@ -56,15 +59,15 @@ function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
 <template>
   <div class="form-wrapper">
     <div class="form-wrapper__presets">
-      <span class="form-wrapper__presets-label">Przykłady:</span>
+      <span class="form-wrapper__presets-label">{{ t('form.examples') }}</span>
       <button
         v-for="preset in PRESET_EXAMPLES"
-        :key="preset.label"
+        :key="preset.key"
         type="button"
         class="form-wrapper__preset-btn"
         @click="applyPreset(preset)"
       >
-        {{ preset.label }}
+        {{ t(`form.presets.${preset.key}`) }}
       </button>
     </div>
 
@@ -73,7 +76,7 @@ function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
         <PointInput
           v-model="point1"
           :point-number="1"
-          label="Punkt A"
+          :label="t('form.pointA')"
         />
         <div class="form__separator" aria-hidden="true">
           <span class="form__separator-line" />
@@ -85,7 +88,7 @@ function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
         <PointInput
           v-model="point2"
           :point-number="2"
-          label="Punkt B"
+          :label="t('form.pointB')"
         />
       </div>
 
@@ -96,7 +99,7 @@ function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
           :disabled="loading"
           @click="handleReset"
         >
-          Wyczyść
+          {{ t('form.clear') }}
         </button>
         <button
           type="submit"
@@ -105,7 +108,7 @@ function applyPreset(preset: typeof PRESET_EXAMPLES[number]) {
           :aria-busy="loading"
         >
           <AppSpinner v-if="loading" :size="18" />
-          <span>{{ loading ? 'Obliczanie…' : 'Oblicz odległość' }}</span>
+          <span>{{ loading ? t('form.calculating') : t('form.calculate') }}</span>
         </button>
       </div>
     </form>

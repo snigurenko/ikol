@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { ValidationError } from '../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   modelValue: string
@@ -18,9 +21,9 @@ const emit = defineEmits<{
 const validationError = computed<ValidationError>(() => {
   if (props.modelValue === '') return null
   const num = parseFloat(props.modelValue)
-  if (isNaN(num)) return 'Wartość musi być liczbą.'
+  if (isNaN(num)) return t('validation.mustBeNumber')
   if (num < props.min || num > props.max)
-    return `Zakres: ${props.min} do ${props.max}.`
+    return t('validation.range', { min: props.min, max: props.max })
   return null
 })
 

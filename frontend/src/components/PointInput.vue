@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CoordinateField from './CoordinateField.vue'
 import type { Coordinates } from '../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   modelValue: Coordinates
@@ -38,14 +41,14 @@ const isComplete = computed(() => {
     <div class="point__header">
       <span class="point__badge">{{ pointNumber }}</span>
       <h3 class="point__title">{{ label }}</h3>
-      <span v-if="isComplete" class="point__complete">Kompletny</span>
+      <span v-if="isComplete" class="point__complete">{{ t('point.complete') }}</span>
     </div>
 
     <div class="point__fields">
       <CoordinateField
         :id="`lat-${pointNumber}`"
         :model-value="modelValue.lat"
-        label="Szerokość geograficzna (lat)"
+        :label="t('point.lat')"
         :min="-90"
         :max="90"
         placeholder="-90 … 90"
@@ -54,7 +57,7 @@ const isComplete = computed(() => {
       <CoordinateField
         :id="`lon-${pointNumber}`"
         :model-value="modelValue.lon"
-        label="Długość geograficzna (lon)"
+        :label="t('point.lon')"
         :min="-180"
         :max="180"
         placeholder="-180 … 180"

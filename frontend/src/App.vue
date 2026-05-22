@@ -2,9 +2,15 @@
 import CoordinateForm from './components/CoordinateForm.vue'
 import DistanceResult from './components/DistanceResult.vue'
 import { useDistance } from './composables/useDistance'
+import { useI18n } from 'vue-i18n'
 import type { Coordinates } from './types'
 
 const { result, error, loading, calculate, reset } = useDistance()
+const { t, locale } = useI18n()
+
+function toggleLocale() {
+  locale.value = locale.value === 'pl' ? 'en' : 'pl'
+}
 
 async function handleSubmit(point1: Coordinates, point2: Coordinates) {
   await calculate(point1, point2)
@@ -19,10 +25,13 @@ async function handleSubmit(point1: Coordinates, point2: Coordinates) {
           <circle cx="16" cy="16" r="16" fill="#6366f1"/>
           <path d="M10 22l6-14 6 14M12 18h8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <div>
-          <h1 class="header__title">Kalkulator odległości</h1>
-          <p class="header__subtitle">Oblicz dystans między dwoma punktami na Ziemi</p>
+        <div class="header__text">
+          <h1 class="header__title">{{ t('app.title') }}</h1>
+          <p class="header__subtitle">{{ t('app.subtitle') }}</p>
         </div>
+        <button class="lang-toggle" type="button" @click="toggleLocale" :aria-label="locale === 'pl' ? 'Switch to English' : 'Przełącz na polski'">
+          {{ locale === 'pl' ? 'EN' : 'PL' }}
+        </button>
       </div>
     </header>
 
@@ -50,11 +59,11 @@ async function handleSubmit(point1: Coordinates, point2: Coordinates) {
     </main>
 
     <footer class="footer">
-      Zadanie testowe dla Ikol. 
-      <p>Zrobione prez Dymitr Snigurenko. </p>
+      {{ t('app.footer.task') }}
+      <p>{{ t('app.footer.author') }}</p>
       <p>mail: dendygreek@gmail.com</p>
       <br/>
-      <p>Dokładność ±0.5%</p>
+      <p>{{ t('app.footer.accuracy') }}</p>
     </footer>
   </div>
 </template>
@@ -78,6 +87,30 @@ async function handleSubmit(point1: Coordinates, point2: Coordinates) {
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+.header__text {
+  flex: 1;
+}
+
+.lang-toggle {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.lang-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: #eef2ff;
 }
 
 .header__logo {
